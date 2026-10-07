@@ -1,0 +1,24 @@
+# Java als relevante Projektsprache behandeln
+*.java linguist-detectable=true
+
+# Build-/generierte Dateien ignorieren
+target/** linguist-generated=true
+build/** linguist-generated=true
+.gradle/** linguist-generated=true
+
+# Frontend / statische Dateien nicht in Sprachstatistik einrechnen
+*.html linguist-detectable=false
+*.css linguist-detectable=false
+*.js linguist-detectable=false
+*.ts linguist-detectable=false
+
+# Konfigurationsdateien ignorieren
+*.yml linguist-detectable=false
+*.yaml linguist-detectable=false
+*.xml linguist-detectable=false
+*.json linguist-detectable=false
+
+# Docker/Shell nicht berücksichtigen
+Dockerfile linguist-detectable=false
+docker-compose*.yml linguist-detectable=false
+*.sh linguist-detectable=false
