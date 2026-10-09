@@ -22,7 +22,14 @@ public class Customer
 
     private String firstName;
     private String lastName;
+    private String dateOfBirth;
+
     private String email;
+    private String phoneNumber;
+
+    private String address;
+    private String zipCode;
+    private String city;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Account> accounts = new HashSet<>();
