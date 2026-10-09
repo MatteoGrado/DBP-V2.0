@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+echo "Running pre-commit pipeline..."
+
+echo "Running tests..."
+./mvnw test
+
+echo "Building project..."
+./mvnw package -DskipTests
+
+echo "Pre-commit pipeline passed!"
