@@ -164,6 +164,15 @@ services:
       timeout: 5s
       retries: 20
 
+  ocrmypdf:
+    image: jbarlow83/ocrmypdf:latest
+    container_name: ocrmypdf
+    entrypoint: [ "python", "/app/webservice.py" ]
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ./ocr-data:/data
+    restart: unless-stopped
 
   mailhog:
     image: mailhog/mailhog:v1.0.1

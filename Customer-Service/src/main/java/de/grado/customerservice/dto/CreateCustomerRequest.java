@@ -1,4 +1,4 @@
-package de.grado.customerservice.dto.request;
+package de.grado.customerservice.dto;
 
 import lombok.Data;
 
