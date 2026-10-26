@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/customer")
@@ -28,7 +28,7 @@ public class CustomerController
     }
 
     @GetMapping("/getCustomer/{id}")
-    public ResponseEntity<String> getCustomer(@PathVariable BigInteger id)
+    public ResponseEntity<String> getCustomer(@PathVariable UUID id)
     {
         customerService.findCustomer(id);
         return ResponseEntity.ok("Found customer with id " + id);

@@ -75,6 +75,44 @@ services:
       timeout: 5s
       retries: 20
 
+  backoffice-service:
+    build: ./BackOffice-Service
+    depends_on:
+      consul:
+        condition: service_healthy
+      backoffice-db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DB_HOST: backoffice-db
+      DB_PORT: 5432
+      POSTGRES_BACKOFFICE_DB: ${POSTGRES_BACKOFFICE_DB}
+      POSTGRES_BACKOFFICE_USER: ${POSTGRES_BACKOFFICE_USER}
+      POSTGRES_BACKOFFICE_PASSWORD: ${POSTGRES_BACKOFFICE_PASSWORD}
+    ports:
+      - "8083:8083"
+
+  backoffice-db:
+    image: postgres:18
+    container_name: backoffice-db
+    env_file:
+      .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_BACKOFFICE_DB}
+      POSTGRES_USER: ${POSTGRES_BACKOFFICE_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_BACKOFFICE_PASSWORD}
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+    ports:
+      - "3308:5432"
+    volumes:
+      - backoffice-db-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_BACKOFFICE_USER} -d ${POSTGRES_BACKOFFICE_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
   consul:
     image: hashicorp/consul:1.20
     command: agent -dev -client=0.0.0.0
@@ -186,6 +224,7 @@ services:
 volumes:
   customer-db-data:
   user-db-data:
+  backoffice-db-data:
   kafka_data:
   elasticsearch-data:
   redis-data:

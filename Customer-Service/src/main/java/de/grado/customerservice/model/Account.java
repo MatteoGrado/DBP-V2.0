@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.UUID;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,8 +27,8 @@ import java.util.Set;
 public class Account
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String accountNumber;
 

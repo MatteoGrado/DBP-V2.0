@@ -62,6 +62,5 @@ public class CustomerServiceTest
 
         when(customerRepository.findById(any()))
                 .thenReturn(Optional.of(customer));
-
     }
 }

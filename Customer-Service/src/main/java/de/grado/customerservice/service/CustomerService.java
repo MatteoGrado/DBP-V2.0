@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +21,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Locale;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,7 +48,7 @@ public class CustomerService
         return customerRepository.findAll();
     }
 
-    public Optional<Customer> findCustomer(BigInteger id)
+    public Optional<Customer> findCustomer(UUID id)
     {
         log.info("Getting customer by id: {}", id);
         return customerRepository.findById(id);
