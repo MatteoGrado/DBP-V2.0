@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -43,5 +45,23 @@ public class CustomerServiceTest
 
         verify(customerRepository, times(1))
                 .save(any(Customer.class));
+    }
+
+    @Test
+    public void findCustomerTest()
+    {
+        Customer customer = new Customer();
+
+        customer.setFirstName("Matteo");
+        customer.setLastName("Grado");
+        customer.setDateOfBirth("2003-10-18");
+        customer.setAddress("Teststr. 25");
+        customer.setZipCode("70197");
+        customer.setCity("Stuttgart");
+        customer.setPhoneNumber("+49 1520 2942232");
+
+        when(customerRepository.findById(any()))
+                .thenReturn(Optional.of(customer));
+
     }
 }
