@@ -48,4 +48,23 @@ public class CustomerController
         return authenticatedCustomer.map(customer -> ResponseEntity.ok("Customer authenticated with id "
                 + customer.getId())).orElseGet(() -> ResponseEntity.status(401).body("Customer authentication failed"));
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody CreateCustomerRequest request)
+    {
+        Customer customer = customerService.updateCustomer(id, request);
+        return ResponseEntity.ok().body(customer);
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<String> deleteCustomer(@PathVariable UUID id)
+    {
+        boolean deleted = customerService.deleteCustomer(id);
+
+        if (!deleted) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok("Customer deleted successfully");
+    }
 }

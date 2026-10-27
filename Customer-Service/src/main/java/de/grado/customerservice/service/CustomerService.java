@@ -14,15 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
-import java.security.SecureRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,8 +82,7 @@ public class CustomerService
         String lastName = extractField(text, LAST_NAME_PATTERN);
         String dateOfBirth = extractField(text, DATE_OF_BIRTH_PATTERN);
 
-        if (firstName == null || lastName == null || dateOfBirth == null)
-        {
+        if (firstName == null || lastName == null || dateOfBirth == null) {
             log.warn("Could not extract all identity fields from uploaded document");
             return Optional.empty();
         }
@@ -93,32 +92,27 @@ public class CustomerService
         String normalizedDateOfBirth = normalizeDate(dateOfBirth);
 
         Optional<Customer> authenticatedCustomer = customerRepository.findAll().stream().filter(customer ->
-                normalizedFirstName.equals(normalizeText(customer.getFirstName()))
-                        && normalizedLastName.equals(normalizeText(customer.getLastName()))
-                        && normalizedDateOfBirth.equals(normalizeDate(customer.getDateOfBirth())))
+                        normalizedFirstName.equals(normalizeText(customer.getFirstName()))
+                                && normalizedLastName.equals(normalizeText(customer.getLastName()))
+                                && normalizedDateOfBirth.equals(normalizeDate(customer.getDateOfBirth())))
                 .findFirst();
 
-        if (authenticatedCustomer.isEmpty())
-        {
+        if (authenticatedCustomer.isEmpty()) {
             log.info("Customer authentication failed");
             return Optional.empty();
         }
 
         Customer customer = authenticatedCustomer.get();
         Account account;
-        if (customer.getAccounts().isEmpty())
-        {
+        if (customer.getAccounts().isEmpty()) {
             account = new Account();
             account.setAccountNumber(generateNumber(10));
             customer.addAccount(account);
-        }
-        else
-        {
+        } else {
             account = customer.getAccounts().iterator().next();
         }
 
-        if (account.getCards().isEmpty())
-        {
+        if (account.getCards().isEmpty()) {
             Card card = new Card();
             card.setCardNumber(generateNumber(16));
             card.setCardType(CardType.DEBIT);
@@ -136,8 +130,7 @@ public class CustomerService
     private static String generateNumber(int length)
     {
         StringBuilder number = new StringBuilder(length);
-        for (int index = 0; index < length; index++)
-        {
+        for (int index = 0; index < length; index++) {
             number.append(SECURE_RANDOM.nextInt(10));
         }
         return number.toString();
@@ -153,8 +146,7 @@ public class CustomerService
     private static String extractField(String text, Pattern pattern)
     {
         Matcher matcher = pattern.matcher(text);
-        if (!matcher.find())
-        {
+        if (!matcher.find()) {
             return null;
         }
 
@@ -164,8 +156,7 @@ public class CustomerService
 
     private static String normalizeText(String value)
     {
-        if (value == null)
-        {
+        if (value == null) {
             return "";
         }
 
@@ -176,8 +167,7 @@ public class CustomerService
 
     private static String normalizeDate(String value)
     {
-        if (value == null)
-        {
+        if (value == null) {
             return "";
         }
 
@@ -190,19 +180,49 @@ public class CustomerService
         };
         DateTimeParseException lastParseException = null;
 
-        for (DateTimeFormatter format : formats)
-        {
-            try
-            {
+        for (DateTimeFormatter format : formats) {
+            try {
                 return LocalDate.parse(cleaned, format).toString();
-            }
-            catch (DateTimeParseException e)
-            {
+            } catch (DateTimeParseException e) {
                 lastParseException = e;
             }
         }
 
         Sentry.captureException(lastParseException);
         throw new IllegalArgumentException("Invalid date of birth: " + value, lastParseException);
+    }
+
+    @Transactional
+    public Customer updateCustomer(UUID id, CreateCustomerRequest request)
+    {
+        if (request == null) {
+            throw new IllegalArgumentException("Update request must not be null");
+        }
+
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Customer not found with id: " + id));
+
+        customer.setFirstName(request.getFirstName());
+        customer.setLastName(request.getLastName());
+        customer.setDateOfBirth(request.getDateOfBirth());
+        customer.setEmail(request.getEmail());
+        customer.setPhoneNumber(request.getPhoneNumber());
+        customer.setAddress(request.getAddress());
+        customer.setZipCode(request.getZipCode());
+        customer.setCity(request.getCity());
+
+        return customerRepository.save(customer);
+    }
+
+    @Transactional
+    public boolean deleteCustomer(UUID id)
+    {
+        if (!customerRepository.existsById(id)) {
+            return false;
+        }
+
+        customerRepository.deleteById(id);
+        return true;
     }
 }
