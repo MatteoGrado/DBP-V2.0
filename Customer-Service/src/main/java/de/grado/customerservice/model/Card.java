@@ -14,8 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
 @Table(name = "card")
@@ -25,8 +25,8 @@ import java.time.LocalDate;
 public class Card
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String cardNumber;
 
