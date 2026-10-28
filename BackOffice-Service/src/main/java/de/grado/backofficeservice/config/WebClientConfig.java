@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfiguration
+public class WebClientConfig
 {
     @Bean
     public WebClient customerWebClient(@Value("${services.customer.url}") String customerUrl)

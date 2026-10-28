@@ -90,6 +90,7 @@ services:
       POSTGRES_BACKOFFICE_DB: ${POSTGRES_BACKOFFICE_DB}
       POSTGRES_BACKOFFICE_USER: ${POSTGRES_BACKOFFICE_USER}
       POSTGRES_BACKOFFICE_PASSWORD: ${POSTGRES_BACKOFFICE_PASSWORD}
+      CUSTOMER_SERVICE_URL: ${CUSTOMER_SERVICE_URL}
     ports:
       - "8083:8083"
 
@@ -135,7 +136,6 @@ services:
       - "8080:8080"
     volumes:
       - keycloak-data:/opt/keycloak/data
-
 
   kafka:
     image: apache/kafka:4.1.1
@@ -186,7 +186,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 20
-
 
   redis:
     image: redis:8
