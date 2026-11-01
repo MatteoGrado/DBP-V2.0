@@ -42,16 +42,16 @@ public class CustomerService
     private final OcrService ocrService;
     private final CustomerRepository customerRepository;
 
-    public List<Customer> getCustomerList()
+    public List<Customer> getCustomerList(UUID advisorId, boolean admin)
     {
         log.info("Getting customer list");
-        return customerRepository.findAll();
+        return admin ? customerRepository.findAll() : customerRepository.findAllByAdvisorId(advisorId);
     }
 
-    public Optional<Customer> findCustomer(UUID id)
+    public Optional<Customer> findCustomer(UUID id, UUID advisorId, boolean admin)
     {
         log.info("Getting customer by id: {}", id);
-        return customerRepository.findById(id);
+        return admin ? customerRepository.findById(id) : customerRepository.findByIdAndAdvisorId(id, advisorId);
     }
 
     @Transactional
@@ -59,6 +59,7 @@ public class CustomerService
     {
         Customer customer = new Customer();
 
+        customer.setAdvisorId(request.getAdvisorId());
         customer.setFirstName(request.getFirstName());
         customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
@@ -193,15 +194,19 @@ public class CustomerService
     }
 
     @Transactional
-    public Customer updateCustomer(UUID id, CreateCustomerRequest request)
+    public Optional<Customer> updateCustomer(UUID id, CreateCustomerRequest request, UUID advisorId, boolean admin)
     {
+        //TODO: Add Custom Exceptions
+        //TODO: Implement Events
         if (request == null) {
             throw new IllegalArgumentException("Update request must not be null");
         }
 
-        Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Customer not found with id: " + id));
+        Optional<Customer> customerResult = findCustomer(id, advisorId, admin);
+        if (customerResult.isEmpty()) {
+            return Optional.empty();
+        }
+        Customer customer = customerResult.get();
 
         customer.setFirstName(request.getFirstName());
         customer.setLastName(request.getLastName());
@@ -212,13 +217,20 @@ public class CustomerService
         customer.setZipCode(request.getZipCode());
         customer.setCity(request.getCity());
 
-        return customerRepository.save(customer);
+        if (admin && request.getAdvisorId() != null) {
+            customer.setAdvisorId(request.getAdvisorId());
+        }
+
+        return Optional.of(customerRepository.save(customer));
     }
 
     @Transactional
-    public boolean deleteCustomer(UUID id)
+    public boolean deleteCustomer(UUID id, UUID advisorId, boolean admin)
     {
-        if (!customerRepository.existsById(id)) {
+        boolean exists = admin
+                ? customerRepository.existsById(id)
+                : customerRepository.existsByIdAndAdvisorId(id, advisorId);
+        if (!exists) {
             return false;
         }
 

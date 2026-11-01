@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.Authentication;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,22 +22,28 @@ public class CustomerController
     private final CustomerService customerService;
 
     @GetMapping("/getCustomerList")
-    public ResponseEntity<List<Customer>> getCustomerList()
+    public ResponseEntity<List<Customer>> getCustomerList(Authentication authentication)
     {
-        List<Customer> customers = customerService.getCustomerList();
+        List<Customer> customers = customerService.getCustomerList(currentUserId(authentication), isAdmin(authentication));
         return ResponseEntity.ok(customers);
     }
 
     @GetMapping("/getCustomer/{id}")
-    public ResponseEntity<String> getCustomer(@PathVariable UUID id)
+    public ResponseEntity<Customer> getCustomer(@PathVariable UUID id, Authentication authentication)
     {
-        customerService.findCustomer(id);
-        return ResponseEntity.ok("Found customer with id " + id);
+        return customerService.findCustomer(id, currentUserId(authentication), isAdmin(authentication))
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/createUser")
-    public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRequest request)
+    public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRequest request,
+                                                  Authentication authentication)
     {
+        UUID authenticatedUserId = currentUserId(authentication);
+        if (!isAdmin(authentication) || request.getAdvisorId() == null) {
+            request.setAdvisorId(authenticatedUserId);
+        }
         customerService.createCustomer(request);
         return ResponseEntity.ok("Customer created successfully");
     }
@@ -50,21 +57,40 @@ public class CustomerController
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody CreateCustomerRequest request)
+    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody CreateCustomerRequest request,
+                                                    Authentication authentication)
     {
-        Customer customer = customerService.updateCustomer(id, request);
-        return ResponseEntity.ok().body(customer);
+        return customerService.updateCustomer(id, request, currentUserId(authentication), isAdmin(authentication))
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<String> deleteCustomer(@PathVariable UUID id)
+    public ResponseEntity<String> deleteCustomer(@PathVariable UUID id, Authentication authentication)
     {
-        boolean deleted = customerService.deleteCustomer(id);
+        boolean deleted = customerService.deleteCustomer(id, currentUserId(authentication), isAdmin(authentication));
 
         if (!deleted) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok("Customer deleted successfully");
+    }
+
+    private UUID currentUserId(Authentication authentication)
+    {
+        try {
+            return UUID.fromString(authentication.getName());
+        } catch (IllegalArgumentException exception) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "The authenticated user id must be a UUID", exception);
+        }
+    }
+
+    private boolean isAdmin(Authentication authentication)
+    {
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN")
+                        || authority.getAuthority().equals("ADMIN"));
     }
 }

@@ -5,8 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, UUID>
 {
+    List<Customer> findAllByAdvisorId(UUID advisorId);
+
+    Optional<Customer> findByIdAndAdvisorId(UUID id, UUID advisorId);
+
+    boolean existsByIdAndAdvisorId(UUID id, UUID advisorId);
 }
