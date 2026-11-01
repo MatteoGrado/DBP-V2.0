@@ -32,7 +32,7 @@ public class BackOfficeService
 
         if (!CollectionUtils.isEmpty(customers)) {
             return customers;
-        } else  {
+        } else {
             log.info("No customers found");
             throw new RuntimeException("No customers found");
         }

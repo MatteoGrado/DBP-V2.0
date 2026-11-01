@@ -1,6 +1,7 @@
 package de.grado.customerservice.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,10 @@ public class Customer
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    /** Keycloak user id of the adviser responsible for this customer. */
+    @Column(name = "advisor_id")
+    private UUID advisorId;
+
     private String firstName;
     private String lastName;
     private String dateOfBirth;
@@ -32,6 +37,7 @@ public class Customer
     private String city;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<Account> accounts = new HashSet<>();
 
     public void addAccount(Account account)
