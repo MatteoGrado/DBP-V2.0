@@ -2,11 +2,14 @@ package de.grado.backofficeservice.service;
 
 import de.grado.backofficeservice.component.MailBoxMapper;
 import de.grado.backofficeservice.dto.CreateMailBoxEntryDTO;
+import de.grado.backofficeservice.model.Mailbox;
 import de.grado.backofficeservice.repository.MailboxRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,5 +24,11 @@ public class MailBoxService
     {
         log.info("Created MailBox Entry.");
         mailboxRepository.save(mailBoxMapper.toModel(createMailBoxEntryDTO));
+    }
+
+    public List<Mailbox> listMailBoxEntries()
+    {
+        log.info("Listing Mailbox entries.");
+        return mailboxRepository.findAll();
     }
 }
