@@ -1,25 +1,39 @@
 package de.grado.backofficeservice.controller;
 
 import de.grado.backofficeservice.dto.CreateMailBoxEntryDTO;
+import de.grado.backofficeservice.model.Mailbox;
 import de.grado.backofficeservice.service.MailBoxService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/mailbox")
 @RequiredArgsConstructor
+@Slf4j
 public class MailboxController
 {
     private final MailBoxService mailBoxService;
 
     @Operation(summary = "Create new entry", description = "Creates an new entry from bank side.")
     @PostMapping("/createMessage")
-    public void createMessage(@RequestBody CreateMailBoxEntryDTO mailBoxEntryDTO)
+    public ResponseEntity<String> createMessage(@RequestBody CreateMailBoxEntryDTO mailBoxEntryDTO)
     {
         mailBoxService.createMessage(mailBoxEntryDTO);
+        return ResponseEntity.ok("Successfully created new entry");
+    }
+
+    @Operation(summary = "Gets a List of all entries", description = "Returns a list of mailbox entries")
+    @GetMapping("/getMailBoxEntryList")
+    public ResponseEntity<Map<String, List<Mailbox>>> listMailBoxEntries()
+    {
+        log.info("Returned mailbox entries list");
+        return ResponseEntity
+                .ok(Map.of("List of all Mailbox entries", mailBoxService.listMailBoxEntries()));
     }
 }
