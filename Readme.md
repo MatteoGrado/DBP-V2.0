@@ -1,209 +1,273 @@
-DBP-V2.0 — Digital Banking Platform
+# DBP-V2.0 — Digital Banking Platform
 
-A microservice-based banking management platform built with Java and Spring Boot, designed to explore scalable backend architectures, distributed systems, secure authentication, and modern software engineering practices.
+**A Microservices-Based Banking Management Platform built with Java and Spring Boot.**
 
-Project Status: Active Development — Educational and Portfolio Project
+DBP-V2.0 is a backend-focused software engineering project designed to explore microservices architecture, distributed systems, event-driven communication, and secure API development.
 
-Tech Stack
+The platform simulates core banking operations through independently maintainable services, integrating modern technologies and established backend development practices.
 
-Backend
+**Project Status:** 🚧 Active Development  
+**Project Type:** Educational & Portfolio Project  
+**Primary Focus:** Java Backend Development · Spring Boot · Microservices
 
-Java 25, Spring Boot, Spring Data JPA, Hibernate
+## 🛠️ Technology Stack
 
-Architecture
+| Category | Technologies |
+|---|---|
+| Backend | Java 25, Spring Boot, Spring Data JPA, Hibernate |
+| Architecture | Microservices, REST APIs, Event-Driven Architecture |
+| Communication | Spring WebClient, Apache Kafka |
+| Security | Spring Security, Keycloak, OAuth 2.0, JWT |
+| Database | PostgreSQL |
+| Caching | Redis |
+| Service Discovery | HashiCorp Consul |
+| Infrastructure | Docker, Docker Compose |
+| Testing | JUnit 5, Mockito, Testcontainers |
+| API Documentation | OpenAPI, Swagger UI |
+| Build Tools | Maven |
 
-Microservices, REST APIs, Event-Driven Architecture
+> **Note:** This project is under active development. Some technologies and features are being integrated incrementally.
 
-Communication
+## 🏗️ System Architecture
 
-Spring WebClient, Apache Kafka
+DBP-V2.0 follows a microservice-oriented architecture, separating business responsibilities into independently maintainable backend services.
 
-Security
+The architecture emphasizes:
 
-Spring Security, Keycloak, OAuth 2.0, JWT
+- **Separation of Concerns:** Each microservice handles a clearly defined business domain.
+- **Independent Services:** Services can be developed, tested, and maintained separately.
+- **Event-Driven Communication:** Apache Kafka enables asynchronous communication between services.
+- **Synchronous Communication:** REST APIs and Spring WebClient support direct service-to-service interactions.
+- **Centralized Security:** Keycloak provides identity and access management.
+- **Service Discovery:** Consul enables dynamic service registration and discovery.
+- **Distributed Data Management:** Each microservice maintains its own PostgreSQL database.
 
-Database
+### Microservices Overview
 
-PostgreSQL
+| Microservice | Responsibility | Port |
+|---|---|---|
+| User Service | User management and user-related operations | 8081 |
+| Customer Service | Customer information and customer-related operations | 8082 |
+| BackOffice Service | Internal banking administration and service integration | 8083 |
 
-Caching
+### Infrastructure Components
 
-Redis
+| Component | Purpose |
+|---|---|
+| PostgreSQL | Persistent relational data storage |
+| Apache Kafka | Asynchronous event-driven communication |
+| Redis | Caching and performance optimization |
+| Keycloak | Authentication, authorization, and identity management |
+| HashiCorp Consul | Service registration and discovery |
+| Docker Compose | Local container orchestration |
 
-Service Discovery
+## 📁 Project Structure
 
-HashiCorp Consul
-
-Infrastructure
-
-Docker, Docker Compose
-
-Testing
-
-JUnit 5, Mockito, Testcontainers
-
-Documentation
-
-OpenAPI, Swagger UI
-
-Some technologies are integrated incrementally as development progresses.
-
-Architecture
-
-DBP-V2.0 follows a microservice-oriented architecture, separating banking operations into independently maintainable services.
-
-Microservice
-
-Responsibility
-
-Port
-
-User Service
-
-User management and user-related operations
-
-8081
-
-Customer Service
-
-Customer information and customer-related operations
-
-8082
-
-BackOffice Service
-
-Internal banking administration and service integration
-
-8083
-
-Each service maintains its own PostgreSQL database.
-
-Infrastructure components:
-
-Consul: Service registration and discovery
-
-Kafka: Asynchronous event-driven communication
-
-Redis: Caching and performance optimization
-
-Keycloak: Centralized identity and access management
-
-Docker Compose: Local infrastructure orchestration
-
-Project Structure
-
+```text
 DBP-V2.0/
+│
 ├── User-Service/
+│   └── ...
+│
 ├── Customer-Service/
+│   └── ...
+│
 ├── BackOffice-Service/
+│   └── ...
+│
 ├── .github/
+│
 ├── compose.yml
 ├── PROJECT_CONTEXT.md
 └── README.md
+```
 
-Getting Started
+Each microservice is organized as an independent Spring Boot application with its own business logic, configuration, and persistence layer.
 
-Prerequisites
+## 🚀 Getting Started
 
-Java 25
+### Prerequisites
 
-Docker and Docker Compose
+Ensure the following tools are installed:
 
-Git
+- Java 25
+- Docker and Docker Compose
+- Git
+- Maven or the included Maven Wrapper
 
-Maven (or the included Maven Wrapper)
+### 1. Clone the Repository
 
-Clone the Repository
-
+```bash
 git clone https://github.com/MatteoGrado/DBP-V2.0.git
 cd DBP-V2.0
+```
 
-Configure Environment Variables
+### 2. Configure Environment Variables
 
-Create a .env file in the project root and configure the database credentials, Keycloak settings, Kafka configuration, and required service URLs referenced by compose.yml.
+Create a `.env` file in the project root.
 
-Do not commit credentials or secrets to version control.
+Configure the required environment variables referenced in `compose.yml`, including:
 
-Start the Application
+- PostgreSQL database credentials
+- Keycloak configuration
+- Kafka configuration
+- Service URLs and application-specific settings
 
+> **Security Notice:** Never commit passwords, client secrets, access tokens, or other sensitive credentials to version control.
+
+### 3. Start the Application
+
+Validate the Docker Compose configuration:
+
+```bash
 docker compose config
+```
+
+Build and start the services:
+
+```bash
 docker compose up --build -d
+```
 
-The application services are configured to use the following local addresses:
+Check the running containers:
 
-Service
+```bash
+docker compose ps
+```
 
-URL
+View application logs:
 
-User Service
+```bash
+docker compose logs -f
+```
 
-http://localhost:8081
+Stop the application:
 
-Customer Service
+```bash
+docker compose down
+```
 
-http://localhost:8082
+### 4. Local Service Endpoints
 
-BackOffice Service
+| Service | Local URL |
+|---|---|
+| User Service | http://localhost:8081 |
+| Customer Service | http://localhost:8082 |
+| BackOffice Service | http://localhost:8083 |
+| Consul UI | http://localhost:8500 |
 
-http://localhost:8083
+Successful startup requires valid environment configuration and available infrastructure dependencies.
 
-Consul UI
+## 📖 API Documentation
 
-http://localhost:8500
+REST APIs are documented using OpenAPI and Swagger UI, providing interactive documentation for available endpoints.
 
-Successful startup depends on valid environment configuration.
+Swagger UI allows developers to:
 
-API Documentation
+- Explore available REST endpoints
+- Inspect request and response models
+- Review HTTP methods and status codes
+- Understand endpoint authentication requirements
+- Execute API requests during development
 
-REST endpoints are documented using OpenAPI and Swagger.
+For services with Springdoc Swagger UI enabled, documentation is typically available at:
 
-API documentation can be accessed through the Swagger UI of each configured service.
+```text
+http://localhost:<service-port>/swagger-ui/index.html
+```
 
-The available endpoints and authentication requirements depend on the current implementation.
+Actual endpoint availability depends on the current service configuration.
 
-Testing
+## 🧪 Testing Strategy
 
-The project uses automated testing to validate business logic and service integration.
+DBP-V2.0 uses automated testing to validate application behavior, business logic, and infrastructure integration.
 
-JUnit 5: Unit and integration testing
+| Framework | Purpose |
+|---|---|
+| JUnit 5 | Unit and integration testing |
+| Mockito | Mocking service dependencies |
+| Testcontainers | Integration testing with containerized infrastructure |
 
-Mockito: Mocking dependencies
+### Run Tests
 
-Testcontainers: Integration testing with containerized infrastructure
+Navigate to a microservice directory:
 
-Example:
-
+```bash
 cd User-Service
+```
+
+Execute the test suite:
+
+```bash
 ./mvnw test
+```
 
-Security
+### Testing Objectives
 
-The architecture incorporates Spring Security and Keycloak for centralized authentication and authorization.
+- Validate service-layer business logic
+- Verify expected application behavior
+- Test database persistence and repository operations
+- Verify interactions between application components
+- Improve reliability and maintainability
 
-Security concepts include OAuth 2.0, JWT-based authentication, and role-based access control.
+Integration test coverage is being expanded as development progresses.
 
-This project is intended for development and educational purposes, not production banking operations.
+## 🔐 Security Architecture
 
-Roadmap
+DBP-V2.0 incorporates Spring Security and Keycloak to explore centralized authentication and authorization in a distributed environment.
 
-Planned improvements include:
+### Security Technologies
 
-Expand banking and transaction management functionality
+- **Spring Security:** Application-level security and request authorization
+- **Keycloak:** Centralized identity and access management
+- **OAuth 2.0:** Authorization framework
+- **JWT:** Token-based authentication
+- **Role-Based Access Control (RBAC):** Restricting access based on assigned roles
 
-Improve asynchronous event processing
+The security architecture is designed to separate identity management from individual business services.
 
-Extend integration test coverage
+> **Disclaimer:** DBP-V2.0 is an educational project and is not intended for production banking operations or the processing of real financial transactions.
 
-Introduce controlled database migrations
+## 🗺️ Development Roadmap
 
-Improve monitoring and observability
+The following improvements are planned as the platform evolves:
 
-Strengthen production-oriented security configuration
+- [ ] Expand banking account and transaction management
+- [ ] Improve Kafka-based asynchronous event processing
+- [ ] Extend integration test coverage with Testcontainers
+- [ ] Introduce version-controlled database migrations
+- [ ] Implement monitoring and observability
+- [ ] Strengthen production-oriented security configuration
+- [ ] Expand CI/CD and deployment automation
+- [ ] Improve resilience and fault tolerance between services
 
-Expand deployment automation
+The roadmap will evolve as new architectural and technical requirements are introduced.
 
-Author
+## 🎯 Project Objectives
 
-Developed by Matteo Grado.
+This project serves as a practical environment for strengthening skills in:
 
-Focus: Java Backend Development, Spring Boot, Microservices, and Distributed Systems.
+- Java and Spring Boot backend development
+- Microservices and distributed system architecture
+- RESTful API design and service integration
+- Event-driven architecture with Apache Kafka
+- Authentication and authorization using OAuth 2.0 and JWT
+- Relational database design and persistence
+- Containerized application development
+- Automated testing and software quality
+- Modern DevOps and deployment practices
+
+## 👨‍💻 Author
+
+**Matteo Grado**  
+Java Backend Developer | Spring Boot | Microservices
+
+Focused on developing maintainable, scalable backend applications and continuously expanding expertise in distributed systems, cloud infrastructure, and modern software engineering.
+
+**GitHub:** https://github.com/MatteoGrado  
+**Repository:** https://github.com/MatteoGrado/DBP-V2.0
+
+---
+
+**DBP-V2.0 — Digital Banking Platform**  
+*Built for learning, experimentation, and continuous improvement.*
