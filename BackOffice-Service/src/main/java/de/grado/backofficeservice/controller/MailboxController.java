@@ -5,8 +5,6 @@ import de.grado.backofficeservice.exceptions.MailBoxNotFoundException;
 import de.grado.backofficeservice.model.Mailbox;
 import de.grado.backofficeservice.service.MailBoxService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +48,15 @@ public class MailboxController
         Optional<Mailbox> mailbox = mailBoxService.getEntry(id);
 
         return ResponseEntity.ok(Map.of("Mailbox", mailbox));
+    }
+
+    @Operation(summary = "Update Mailbox Entry", description = "Updates a mailbox entry by UUID id.")
+    @PutMapping("/updateEntry/{id}")
+    public ResponseEntity<String> updateMailboxEntry(@PathVariable UUID id, @RequestBody CreateMailBoxEntryDTO mailBoxEntryDTO) throws MailBoxNotFoundException
+    {
+        log.info("Updating Mailbox entry.");
+        mailBoxService.updateEntry(id, mailBoxEntryDTO);
+        return ResponseEntity.ok("Successfully updated Mailbox entry.");
     }
 
     @Operation(summary = "Delete Mailbox Entry", description = "Deletes by UUID id an Entry from DB.")

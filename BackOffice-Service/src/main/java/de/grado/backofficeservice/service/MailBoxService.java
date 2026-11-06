@@ -47,6 +47,22 @@ public class MailBoxService
     }
 
     @Transactional
+    public void updateEntry(UUID id, CreateMailBoxEntryDTO updateMailBoxEntryDTO) throws MailBoxNotFoundException
+    {
+        log.info("Updating Mailbox entry with id: {}", id);
+        Mailbox mailbox = mailboxRepository.findById(id)
+                .orElseThrow(() -> new MailBoxNotFoundException("No Entry with id: " + id + " found!"));
+
+        mailbox.setFirstName(updateMailBoxEntryDTO.getFirstName());
+        mailbox.setLastName(updateMailBoxEntryDTO.getLastName());
+        mailbox.setEmail(updateMailBoxEntryDTO.getEmail());
+        mailbox.setSubject(updateMailBoxEntryDTO.getSubject());
+        mailbox.setBody(updateMailBoxEntryDTO.getBody());
+
+        mailboxRepository.save(mailbox);
+    }
+
+    @Transactional
     public void deleteEntry(UUID id)
     {
         log.info("Deleting Mailbox entry with id: {}", id);
