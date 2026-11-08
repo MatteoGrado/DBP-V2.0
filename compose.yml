@@ -164,7 +164,6 @@ services:
       timeout: 10s
       retries: 20
 
-
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.1.4
     container_name: elasticsearch
