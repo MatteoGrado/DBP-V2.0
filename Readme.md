@@ -264,6 +264,7 @@ Java Backend Developer | Spring Boot | Microservices
 
 Focused on developing maintainable, scalable backend applications and continuously expanding expertise in distributed systems, cloud infrastructure, and modern software engineering.
 
+**LinkedIn:** https://www.linkedin.com/in/matteo-grado-a09481216
 **GitHub:** https://github.com/MatteoGrado  
 **Repository:** https://github.com/MatteoGrado/DBP-V2.0
 
