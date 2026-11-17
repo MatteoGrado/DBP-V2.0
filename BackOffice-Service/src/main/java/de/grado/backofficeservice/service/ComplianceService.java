@@ -1,5 +1,6 @@
 package de.grado.backofficeservice.service;
 
+import de.grado.backofficeservice.dto.CreateTransactionDTO;
 import de.grado.backofficeservice.model.TempTransaction;
 import de.grado.backofficeservice.repository.TempTransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,5 +20,9 @@ public class ComplianceService
     {
         log.info("Getting List of temp transactions");
         return tempTransactionRepository.findAll();
+    }
+
+    public void createTransaction(CreateTransactionDTO createTransactionDTO)
+    {
     }
 }
