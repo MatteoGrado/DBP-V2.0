@@ -28,17 +28,17 @@ public class ComplianceService
         if (transaction.amount() != null && transaction.amount().compareTo(HIGH_VALUE_LIMIT) > 0) {
             log.warn("Transaction {} exceeds the high-value limit of {}. Follow-up action is pending.",
                     transaction.transactionId(), HIGH_VALUE_LIMIT);
-            // TODO: Hier die noch festzulegende Aktion für Transaktionen über 10.000 ausführen.
-        }
-    }
-
-    private String normalizeIban(String iban)
-    {
-        if (iban == null || iban.isBlank()) {
-            return null;
+            // TODO: Add method when acount is bigger than 10k
+            //  Use Kafka}
         }
 
-        return iban.replaceAll("\\s+", "")
-                .toUpperCase(Locale.ROOT);
+        private String normalizeIban (String iban)
+        {
+            if (iban == null || iban.isBlank()) {
+                return null;
+            }
+
+            return iban.replaceAll("\\s+", "")
+                    .toUpperCase(Locale.ROOT);
+        }
     }
-}
