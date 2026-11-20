@@ -1,15 +1,13 @@
 package de.grado.backofficeservice.controller;
 
+import de.grado.backofficeservice.dto.CreateTransactionDTO;
 import de.grado.backofficeservice.model.TempTransaction;
 import de.grado.backofficeservice.service.ComplianceService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,9 +27,12 @@ public class ComplianceController
         return ResponseEntity.ok(complianceService.getTempTransactions());
     }
 
-    @Operation(summary = "Steams transactions live into db", description = "TempTransaction DB get filled")
-    @PostMapping("/transactionStream")
-    public void streamTransactions()
+    @Operation(summary = "Writes the Transactions to DB", description = "Transactions get created in db")
+    @PostMapping("/createTransaction")
+    public ResponseEntity<String> createTransaction(@RequestBody CreateTransactionDTO createTransactionDTO)
     {
+        log.info("Created Transaction");
+        complianceService.createTransaction(createTransactionDTO);
+        return ResponseEntity.ok("Transaction successfully created");
     }
 }
