@@ -1,6 +1,8 @@
 package de.grado.backofficeservice.service;
 
+import de.grado.backofficeservice.dto.CreateMailBoxEntryDTO;
 import de.grado.backofficeservice.dto.CreateTransactionDTO;
+import de.grado.backofficeservice.events.CreateTransactionEntry;
 import de.grado.backofficeservice.model.TempTransaction;
 import de.grado.backofficeservice.repository.TempTransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,25 @@ public class ComplianceService
         tempTransaction.setToBic(createTransactionDTO.getToBic());
 
         tempTransactionRepository.save(tempTransaction);
-        //TODO: Add event for kafka
+        sendCreatedTransactions(createTransactionDTO);
     }
+
+    public void sendCreatedTransactions(CreateTransactionDTO dto)
+    {
+        CreateTransactionEntry event = new CreateTransactionEntry(
+                dto.getFromName(),
+                dto.getFromIban(),
+                dto.getFromBic(),
+                dto.getAmount(),
+                dto.getFromCountry(),
+                dto.getToCountry(),
+                dto.getToName(),
+                dto.getToIban(),
+                dto.getToBic()
+        );
+
+        kafkaTemplate.send("create-transaction", event);
+    }
+
+    
 }
