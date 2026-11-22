@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record CreateTransactionEntry(
         UUID transactionId,
+        UUID customerId,
         String fromName,
         String fromIban,
         String fromBic,

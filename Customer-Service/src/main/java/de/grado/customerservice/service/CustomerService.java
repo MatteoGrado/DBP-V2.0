@@ -1,6 +1,7 @@
 package de.grado.customerservice.service;
 
 import de.grado.customerservice.dto.CreateCustomerRequest;
+import de.grado.customerservice.dto.CustomerComplianceDTO;
 import de.grado.customerservice.model.Account;
 import de.grado.customerservice.model.Card;
 import de.grado.customerservice.model.CardType;
@@ -236,5 +237,19 @@ public class CustomerService
 
         customerRepository.deleteById(id);
         return true;
+    }
+
+    public CustomerComplianceDTO getCustomerForCompliance(UUID customerId) throws Exception
+    {
+        return customerRepository.findById(customerId)
+                .map(customer -> new CustomerComplianceDTO(
+                        customer.getFirstName(),
+                        customer.getLastName(),
+                        customer.getEmail(),
+                        customer.getAdvisorId()
+                ))
+                .orElseThrow(() ->
+                        new Exception("Customer not found: " + customerId)
+                );
     }
 }

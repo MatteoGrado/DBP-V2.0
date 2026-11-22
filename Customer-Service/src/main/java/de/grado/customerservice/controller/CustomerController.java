@@ -1,9 +1,12 @@
 package de.grado.customerservice.controller;
 
 import de.grado.customerservice.dto.CreateCustomerRequest;
+import de.grado.customerservice.dto.CustomerComplianceDTO;
 import de.grado.customerservice.model.Customer;
 import de.grado.customerservice.service.CustomerService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerController
 {
     private final CustomerService customerService;
@@ -24,7 +28,8 @@ public class CustomerController
     @GetMapping("/getCustomerList")
     public ResponseEntity<List<Customer>> getCustomerList(Authentication authentication)
     {
-        List<Customer> customers = customerService.getCustomerList(currentUserId(authentication), isAdmin(authentication));
+        List<Customer> customers = customerService.getCustomerList(currentUserId(authentication),
+                isAdmin(authentication));
         return ResponseEntity.ok(customers);
     }
 
@@ -38,7 +43,7 @@ public class CustomerController
 
     @PostMapping("/createUser")
     public ResponseEntity<String> createCustomer(@RequestBody CreateCustomerRequest request,
-                                                  Authentication authentication)
+                                                 Authentication authentication)
     {
         UUID authenticatedUserId = currentUserId(authentication);
         if (!isAdmin(authentication) || request.getAdvisorId() == null) {
@@ -58,7 +63,7 @@ public class CustomerController
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable UUID id, @RequestBody CreateCustomerRequest request,
-                                                    Authentication authentication)
+                                                   Authentication authentication)
     {
         return customerService.updateCustomer(id, request, currentUserId(authentication), isAdmin(authentication))
                 .map(ResponseEntity::ok)
@@ -75,6 +80,14 @@ public class CustomerController
         }
 
         return ResponseEntity.ok("Customer deleted successfully");
+    }
+
+    @Operation(summary = "Finds data about a customer with his id", description = "Finds specific data about an specified customer")
+    @GetMapping("/getCustomer/notify/{id}")
+    public CustomerComplianceDTO getCustomerNotify(@PathVariable UUID id) throws Exception
+    {
+        log.info("Returned Customer Information");
+        return customerService.getCustomerForCompliance(id);
     }
 
     private UUID currentUserId(Authentication authentication)

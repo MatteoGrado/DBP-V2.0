@@ -16,4 +16,6 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID>
     Optional<Customer> findByIdAndAdvisorId(UUID id, UUID advisorId);
 
     boolean existsByIdAndAdvisorId(UUID id, UUID advisorId);
+
+    UUID id(UUID id);
 }

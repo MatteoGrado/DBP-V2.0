@@ -33,6 +33,7 @@ public class TransactionService
         UUID transactionId = UUID.randomUUID();
         tempTransaction.setTransactionId(transactionId);
 
+        tempTransaction.setCustomerId(createTransactionDTO.getCustomerId());
         tempTransaction.setFromName(createTransactionDTO.getFromName());
         tempTransaction.setFromCountry(createTransactionDTO.getFromCountry());
         tempTransaction.setFromIban(createTransactionDTO.getFromIban());
@@ -52,6 +53,7 @@ public class TransactionService
     {
         CreateTransactionEntry event = new CreateTransactionEntry(
                 transactionId,
+                dto.getCustomerId(),
                 dto.getFromName(),
                 dto.getFromIban(),
                 dto.getFromBic(),
