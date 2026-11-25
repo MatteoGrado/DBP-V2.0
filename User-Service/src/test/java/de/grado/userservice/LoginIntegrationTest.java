@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LoginIntegrationTest
 {
     @Container
-    static final KeycloakContainer keycloak = new KeycloakContainer("quay.io/keycloak/keycloak:latest")
+    static final KeycloakContainer keycloak = new KeycloakContainer("quay.io/keycloak/keycloak:26.3.3")
             .withRealmImportFile("DBP-V2.0-test-realm.json");
 
     @DynamicPropertySource

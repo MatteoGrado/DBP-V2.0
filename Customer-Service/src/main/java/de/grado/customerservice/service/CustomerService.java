@@ -1,6 +1,7 @@
 package de.grado.customerservice.service;
 
 import de.grado.customerservice.dto.CreateCustomerRequest;
+import de.grado.customerservice.dto.CustomerComplianceDTO;
 import de.grado.customerservice.model.Account;
 import de.grado.customerservice.model.Card;
 import de.grado.customerservice.model.CardType;
@@ -64,6 +65,9 @@ public class CustomerService
         customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
         customer.setPhoneNumber(request.getPhoneNumber());
+        if (request.getScore() != null) {
+            customer.setScore(request.getScore());
+        }
         customer.setAddress(request.getAddress());
         customer.setZipCode(request.getZipCode());
         customer.setCity(request.getCity());
@@ -213,6 +217,9 @@ public class CustomerService
         customer.setDateOfBirth(request.getDateOfBirth());
         customer.setEmail(request.getEmail());
         customer.setPhoneNumber(request.getPhoneNumber());
+        if (request.getScore() != null) {
+            customer.setScore(request.getScore());
+        }
         customer.setAddress(request.getAddress());
         customer.setZipCode(request.getZipCode());
         customer.setCity(request.getCity());
@@ -236,5 +243,20 @@ public class CustomerService
 
         customerRepository.deleteById(id);
         return true;
+    }
+
+    public CustomerComplianceDTO getCustomerForCompliance(UUID customerId) throws Exception
+    {
+        return customerRepository.findById(customerId)
+                .map(customer -> new CustomerComplianceDTO(
+                        customer.getFirstName(),
+                        customer.getLastName(),
+                        customer.getEmail(),
+                        customer.getAdvisorId(),
+                        customer.getScore()
+                ))
+                .orElseThrow(() ->
+                        new Exception("Customer not found: " + customerId)
+                );
     }
 }

@@ -17,6 +17,9 @@ public class TempTransaction
     @Id
     private UUID transactionId;
 
+    @Column(name = "customer_id")
+    private UUID customerId;
+
     @Column(name = "from_name")
     private String fromName;
     @Column(name = "from_iban")

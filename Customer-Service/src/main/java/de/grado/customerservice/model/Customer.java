@@ -32,6 +32,9 @@ public class Customer
     private String email;
     private String phoneNumber;
 
+    @Column(name = "score")
+    private Integer score = 0;
+
     private String address;
     private String zipCode;
     private String city;
