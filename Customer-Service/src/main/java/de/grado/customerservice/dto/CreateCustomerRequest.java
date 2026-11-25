@@ -13,6 +13,7 @@ public class CreateCustomerRequest
     private String dateOfBirth;
     private String email;
     private String phoneNumber;
+    private Integer score;
     private String address;
     private String zipCode;
     private String city;

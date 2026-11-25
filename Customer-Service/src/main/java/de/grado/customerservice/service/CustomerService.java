@@ -65,6 +65,9 @@ public class CustomerService
         customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
         customer.setPhoneNumber(request.getPhoneNumber());
+        if (request.getScore() != null) {
+            customer.setScore(request.getScore());
+        }
         customer.setAddress(request.getAddress());
         customer.setZipCode(request.getZipCode());
         customer.setCity(request.getCity());
@@ -214,6 +217,9 @@ public class CustomerService
         customer.setDateOfBirth(request.getDateOfBirth());
         customer.setEmail(request.getEmail());
         customer.setPhoneNumber(request.getPhoneNumber());
+        if (request.getScore() != null) {
+            customer.setScore(request.getScore());
+        }
         customer.setAddress(request.getAddress());
         customer.setZipCode(request.getZipCode());
         customer.setCity(request.getCity());
@@ -246,7 +252,8 @@ public class CustomerService
                         customer.getFirstName(),
                         customer.getLastName(),
                         customer.getEmail(),
-                        customer.getAdvisorId()
+                        customer.getAdvisorId(),
+                        customer.getScore()
                 ))
                 .orElseThrow(() ->
                         new Exception("Customer not found: " + customerId)
