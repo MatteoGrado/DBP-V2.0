@@ -6,6 +6,7 @@ import de.grado.customerservice.model.Account;
 import de.grado.customerservice.model.Card;
 import de.grado.customerservice.model.CardType;
 import de.grado.customerservice.model.Customer;
+import de.grado.customerservice.repositorys.AccountRepository;
 import de.grado.customerservice.repositorys.CustomerRepository;
 import io.sentry.Sentry;
 import jakarta.transaction.Transactional;
@@ -32,9 +33,9 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CustomerService
 {
+    private final AccountRepository accountRepository;
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-    private static final Pattern FIRST_NAME_PATTERN = fieldPattern(
-            "first\\s*name|firstname|given\\s*name|vorname");
+    private static final Pattern FIRST_NAME_PATTERN = fieldPattern("first\\s*name|firstname|given\\s*name|vorname");
     private static final Pattern LAST_NAME_PATTERN = fieldPattern(
             "last\\s*name|lastname|surname|family\\s*name|nachname");
     private static final Pattern DATE_OF_BIRTH_PATTERN = fieldPattern(
@@ -96,11 +97,11 @@ public class CustomerService
         String normalizedLastName = normalizeText(lastName);
         String normalizedDateOfBirth = normalizeDate(dateOfBirth);
 
-        Optional<Customer> authenticatedCustomer = customerRepository.findAll().stream().filter(customer ->
-                        normalizedFirstName.equals(normalizeText(customer.getFirstName()))
-                                && normalizedLastName.equals(normalizeText(customer.getLastName()))
-                                && normalizedDateOfBirth.equals(normalizeDate(customer.getDateOfBirth())))
-                .findFirst();
+        Optional<Customer> authenticatedCustomer = customerRepository.findAll().stream()
+                .filter(customer -> normalizedFirstName.equals(
+                        normalizeText(customer.getFirstName())) && normalizedLastName.equals(
+                        normalizeText(customer.getLastName())) && normalizedDateOfBirth.equals(
+                        normalizeDate(customer.getDateOfBirth()))).findFirst();
 
         if (authenticatedCustomer.isEmpty()) {
             log.info("Customer authentication failed");
@@ -143,9 +144,9 @@ public class CustomerService
 
     private static Pattern fieldPattern(String fieldNames)
     {
-        return Pattern.compile("(?im)^[ \\t]*(?:" + fieldNames
-                + ")[ \\t]*(?:[:=])[ \\t]*(.+?)\\s*$|^[ \\t]*(?:"
-                + fieldNames + ")[ \\t]*\\r?\\n[ \\t]*(.+?)\\s*$", Pattern.MULTILINE);
+        return Pattern.compile(
+                "(?im)^[ \\t]*(?:" + fieldNames + ")[ \\t]*(?:[:=])[ \\t]*(.+?)\\s*$|^[ \\t]*(?:" + fieldNames + ")[ \\t]*\\r?\\n[ \\t]*(.+?)\\s*$",
+                Pattern.MULTILINE);
     }
 
     private static String extractField(String text, Pattern pattern)
@@ -165,8 +166,7 @@ public class CustomerService
             return "";
         }
 
-        String withoutAccents = Normalizer.normalize(value, Normalizer.Form.NFD)
-                .replaceAll("\\p{M}", "");
+        String withoutAccents = Normalizer.normalize(value, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
         return withoutAccents.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
     }
 
@@ -177,12 +177,8 @@ public class CustomerService
         }
 
         String cleaned = value.trim();
-        DateTimeFormatter[] formats = {
-                DateTimeFormatter.ofPattern("dd.MM.uuuu"),
-                DateTimeFormatter.ofPattern("dd/MM/uuuu"),
-                DateTimeFormatter.ofPattern("dd-MM-uuuu"),
-                DateTimeFormatter.ISO_LOCAL_DATE
-        };
+        DateTimeFormatter[] formats = {DateTimeFormatter.ofPattern("dd.MM.uuuu"), DateTimeFormatter.ofPattern(
+                "dd/MM/uuuu"), DateTimeFormatter.ofPattern("dd-MM-uuuu"), DateTimeFormatter.ISO_LOCAL_DATE};
         DateTimeParseException lastParseException = null;
 
         for (DateTimeFormatter format : formats) {
@@ -234,9 +230,8 @@ public class CustomerService
     @Transactional
     public boolean deleteCustomer(UUID id, UUID advisorId, boolean admin)
     {
-        boolean exists = admin
-                ? customerRepository.existsById(id)
-                : customerRepository.existsByIdAndAdvisorId(id, advisorId);
+        boolean exists = admin ? customerRepository.existsById(id) : customerRepository.existsByIdAndAdvisorId(id,
+                advisorId);
         if (!exists) {
             return false;
         }
@@ -248,15 +243,15 @@ public class CustomerService
     public CustomerComplianceDTO getCustomerForCompliance(UUID customerId) throws Exception
     {
         return customerRepository.findById(customerId)
-                .map(customer -> new CustomerComplianceDTO(
-                        customer.getFirstName(),
-                        customer.getLastName(),
-                        customer.getEmail(),
-                        customer.getAdvisorId(),
-                        customer.getScore()
-                ))
-                .orElseThrow(() ->
-                        new Exception("Customer not found: " + customerId)
-                );
+                .map(customer -> new CustomerComplianceDTO(customer.getFirstName(), customer.getLastName(),
+                        customer.getEmail(), customer.getAdvisorId(), customer.getScore()))
+                .orElseThrow(() -> new Exception("Customer not found: " + customerId));
+    }
+
+    public Customer getCustomerByAccount(String accountNumber)
+    {
+        return accountRepository
+                .findByAccountNumber(accountNumber)
+                .getCustomer();
     }
 }

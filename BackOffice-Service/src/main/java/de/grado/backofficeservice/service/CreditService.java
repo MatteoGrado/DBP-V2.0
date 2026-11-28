@@ -1,6 +1,5 @@
 package de.grado.backofficeservice.service;
 
-import de.grado.backofficeservice.dto.CustomerDTO;
 import de.grado.backofficeservice.dto.StartProcessDTO;
 import de.grado.backofficeservice.model.CreditProcess;
 import de.grado.backofficeservice.repository.CreditProcessRepository;
@@ -28,8 +27,8 @@ public class CreditService
 
         creditProcessRepository.save(creditProcess);
     }
-
-    public CustomerDTO getCustomer(String accountNumber)
+    //return CustomerDTO
+    public void getCustomer(String accountNumber)
     {
         //TODO: Webclient Request with first and lastname to get Customer
     }

@@ -8,9 +8,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.security.core.Authentication;
 
 import java.io.IOException;
 import java.util.List;
@@ -88,6 +88,14 @@ public class CustomerController
     {
         log.info("Returned Customer Information");
         return customerService.getCustomerForCompliance(id);
+    }
+
+    @Operation(summary = "Returns Customer", description = "Returns the Customer by accountNumber")
+    @GetMapping("/getCustomer/credit/{accountNumber}")
+    public Customer getCustomerCredit(@PathVariable String accountNumber)
+    {
+        log.info("Returned Customer with account {}", accountNumber);
+        return customerService.getCustomerByAccount(accountNumber);
     }
 
     private UUID currentUserId(Authentication authentication)
